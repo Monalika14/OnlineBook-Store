@@ -1,0 +1,163 @@
+
+{% extends 'shop/basic.html' %}
+<head>
+    <!-- Our project just needs Font Awesome Free's Solid and Brand files -->
+
+
+{% block title%} {{product.product_name}} - My Awesome Cart{% endblock %}
+{% block body %}
+
+<div class="container my-4">
+    <div class="row">
+    <div class="col-md-4">
+    <div class="row">
+        <img src="/media/{{product.image}}" width="233px" height="380px">
+    </div>
+        <div class="row">
+            <button class="btn btn-primary mx-3">Buy Now</button>
+            <button class="btn btn-primary">Add To Cart</button>
+        </div>
+
+    </div>
+
+    <div class="col-md-8">
+        <h5>{{product.product_name}}</h5>
+        <p><b>Rs.{{product.price}} </b></p>
+        <p>{{product.desc}}</p>
+
+
+    </div>
+    </div>
+
+
+</div>
+
+<form action="{% url 'submit_review' product.id%}" method="POST">
+     {% csrf_token %}
+    <h5>Write Your Review</h5>
+
+     <div>
+
+         <label>How Do You Rate This Book?</label>
+         <br>
+         <div class="rate">
+             <input type="radio" name="rating" id="rating10" value="5" required /><label form="rating10" title="5"></label>
+              <input type="radio" name="rating" id="rating9" value="4.5" required /><label form="rating9" title="4.5" class="half"></label>
+              <input type="radio" name="rating" id="rating8" value="4" required /><label form="rating8" title="4"></label>
+              <input type="radio" name="rating" id="rating7" value="3.5" required /><label form="rating7" title="3.5" class="half"></label>
+              <input type="radio" name="rating" id="rating6" value="3" required /><label form="rating6" title="3"></label>
+              <input type="radio" name="rating" id="rating5" value="2.5" required /><label form="rating5" title="2.5" class="half"></label>
+              <input type="radio" name="rating" id="rating4" value="2" required /><label form="rating4" title="2"></label>
+              <input type="radio" name="rating" id="rating3" value="1.5" required /><label form="rating3" title="1.5" class="half"></label>
+              <input type="radio" name="rating" id="rating2" value="1" required /><label form="rating2" title="1"></label>
+              <input type="radio" name="rating" id="rating1" value="0.5" required /><label form="rating1" title="0.5" class="half"></label>
+         </div>
+         Review Tile:
+         <input type="text" class="form-control" name="subject">
+         <br>
+         Review:
+         <textarea name="review" rows="4" class="form-control"></textarea>
+         <br>
+         <input type="submit" value="submit review" class="btn btn-primary">
+     </div>
+    <style>
+
+        .rate > input{
+  display: none;
+}
+
+.rate{
+  display: inline-block;;
+  border: 0;
+}
+
+.rate > label{
+  float: right;
+}
+
+/* Showing the stars */
+.rate > label:before{
+  display: inline-block;
+  font-size: 1.1rem;
+  font-family: FontAwesome;
+  content: "\f005";
+  margin:0;
+  padding:0.3rem .2rem;
+  cursor: pointer;
+}
+
+/* Half star */
+.rate .half:before{
+  content: "\f089";
+  position: absolute;
+  padding-right: 0;
+}
+
+/* Click and hover */
+input:checked ~ label, label:hover ~ label{
+  color: #ffb503;
+}
+
+/* hover hightlight */
+input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label{
+  color: #cc9000;
+}
+
+.rating-star i{
+  color: #ffb503 !important;
+}
+
+ul.thumb{
+  margin:0 auto;
+  padding: 0;
+  float: left;
+}
+ul.thumb li{
+  list-style: none;
+  margin: 10px;
+}
+ul.thumb li img{
+  width: 80px;
+  height: 80px;
+  border: 1px solid grey;
+}
+
+
+    </style>
+
+</form>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+console.log('working');
+if(localStorage.getItem('cart') == null){
+var cart = {};
+}
+else
+{
+cart = JSON.parse(localStorage.getItem('cart'));
+document.getElementById('cart').innerHTML = Object.keys(cart).length;
+}
+$('.cart').click(function(){
+console.log('clicked');
+var idstr = this.id.toString();
+console.log(idstr);
+if (cart[idstr] !=undefined){
+cart[idstr] = cart[idstr] + 1;
+}
+else
+{
+cart[idstr] = 1;
+}
+console.log(cart);
+localStorage.setItem('cart', JSON.stringify(cart));
+document.getElementById('cart').innerHTML = Object.keys(cart).length;
+});
+$('#popcart').popover();
+document.getElementById("popcart").setAttribute('data-content', '<h5>Cart for your items in my shopping cart</h5>');
+</script>
+{% endblock %}
